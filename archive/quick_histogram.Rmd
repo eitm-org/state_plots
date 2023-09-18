@@ -1,0 +1,47 @@
+---
+title: "Quick Histograms"
+author: "Abby Coleman"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+      keep_md: yes
+---
+
+```{r setup, include=FALSE}
+#add packages
+library(here)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+#source other files
+source(here("scripts", "functions.R"))
+#set kniter options
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Depth Histograms by Chromosome
+
+```{r hist_chrom, echo = FALSE, warning = FALSE, dev = "png"}
+
+#read in data
+df <- read.table(here("HG002_20220916_0.depth_nocontig.out")) %>%
+  #rename columns
+  rename(chrom = V1,
+         depth = V4) %>%
+  #remove middle two columns that I don't need for this histogram
+  dplyr::select(-c("V2", "V3")) %>%
+  #filter out chromosomes X, Y, and M
+  filter(!(chrom %in% c("chrX", "chrY", "chrM"))) %>%
+  #group by chromosome
+  group_by(chrom) %>%
+  #the nesting seems very silly when you only have two variables but.... it's just how i like to do it ok
+  #also this will be cute if we want to put like... a column for a mean or a model or something in the future
+  nest()
+
+histograms <- apply(df, 1, function(row) get_histograms(row, bin_width = 2, binwidth_caption = TRUE, graph_caption = "Depths 0-50."))
+
+histograms
+
+```
+
+

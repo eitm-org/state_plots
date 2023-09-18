@@ -1,0 +1,79 @@
+---
+title: "Chromosome Zero Read Maps"
+author: "Abby Coleman"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    always_allow_html: yes
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+#add packages
+library(here)
+library(tidyverse)
+library(dplyr)
+library(ggridges)
+library(ggplot2)
+library(chromoMap)
+library(widgetframe)
+#source other files
+source(here("scripts", "functions.R"))
+#set kniter options
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r read_data, echo = FALSE, warning = FALSE}
+file_list <- list.files(here("20230605_state_histograms", "data_input", "unzipped", "chrom_map"), full.names = TRUE)
+
+#read in data
+df <- file_list %>%
+  map_df(read_chrom_map_data)
+
+```
+
+```{r make_chromomaps, echo = FALSE, message = FALSE, warning = FALSE, fig.height = 10}
+#format df for chromomaps and nest
+df_chrom <- df %>% 
+  mutate(sample_short = paste("s", gsub("_", "", str_extract(sample, "_[[:digit:]]{3}_")))) %>%
+  group_by(chrom) %>%
+  nest() %>%
+  filter(chrom != "chrM")
+
+chromomaps <- apply(df_chrom[1,], 1, make_chrom_graphs)
+chromomaps
+```
+
+
+```{r make_histograms, echo = FALSE, warning = FALSE, win}
+# file_list2 <- list.files(here("20230605_state_histograms", "data_input", "unzipped"), full.names = TRUE, include.dirs = FALSE)
+# file_list2 <- file_list2[grepl("nocontig.out", file_list2)]
+# 
+# #read in data
+# df2 <- file_list2 %>%
+#   map_df(read_data) %>%
+#   #rename columns
+#   rename(chrom = V1,
+#          depth = V2) %>%
+#   group_by(chrom) %>%
+#   nest() %>% arrange(chrom)
+# 
+# ridge_hists <- apply(df2, 1, make_ridge_hists)
+# names(ridge_hists) <- df2$chrom
+# ridge_hists
+```
+
+
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+# for (i in 1) {
+#   # ridge_hists[[i]]
+#   chromomaps[[i]]
+# }
+
+```
+
+
+
+
+
