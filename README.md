@@ -1,11 +1,12 @@
-# vaidhy_quick_histogram
-one off graphs for vaidhy
+# state_plots
 
-this file contains scripts for the histograms and chromosome maps for Vaidhy/STATE's "zero reads" issue
+this repo contains scripts for the histograms and chromosome maps for Vaidhy/STATE's "zero reads" issue
 
 BEFORE YOU RUN ANY MARKDOWNS!!! you must download everything from dropbox with the dropbox_downloader.R file in the main directory.
   - I don't like reading things directly from Dropbox because when the files get too old in there you have to "wake them up" (bring them into memory you can use?) by opening them
-  - and I have doing that
+  - and I hate going through and opening all the files i want
+  - so I use my dropbox_downloader to copy all the files to my local machine
+  - you might have to make a folder called "data_input" for them to copy into (or you could script that... i have always been too lazy to do that)
 
 After you run dropbox_downloader.R the markdowns *should* run fine. But if you have any issues message Abby Coleman on Slack or email at acoleman@eitm.org.
 
