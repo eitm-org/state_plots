@@ -1,0 +1,17 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.png
+*.DS_Store
+*.js
+*.rds
+*.bed
+*.log
+*.summary
+*.csv
+*.html
+*.out
+*.json
+*.Rproj
+*.docx

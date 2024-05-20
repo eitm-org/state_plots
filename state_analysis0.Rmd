@@ -1,0 +1,86 @@
+---
+title: "Beginning Analysis for State!"
+author: "Abby Coleman"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+#add packages
+library(here)
+library(tidyverse)
+library(dplyr)
+library(ggridges)
+library(katdetectr)
+library(rtracklayer)
+library(karyoploteR)
+library(ggplot2)
+#source other files
+source(here("scripts", "functions.R"))
+#set kniter options
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r}
+
+# kp <- plotKaryotype(chromosomes="chr1")
+# kpPlotRegions(kp, data=c("chr1:1-50000000", "chr1:100e6-150e6"), col="#AACCFF", r0=0, r1=0.25)
+# df <- data.frame(chr=c("chr1", "chr1", "chr1"), start=c(30e6, 70e6, 150e6), end=c(50e6, 90e6, 170e6))
+# kpPlotRegions(kp, data=df, col="#FFEECC", border="#FFCCAA", r0=0.3, r1=0.55)
+```
+
+```{r}
+df0 <- read.csv(file = here("data_input", "abby_tmp", "mbps_batch_adj_f1.csv"))
+```
+
+```{r}
+mean_kats <- df0 %>%
+  filter(!is.na(kataegis_mean_snv_count)) %>%
+  dplyr::select(chr, start, end)
+  
+kp <- plotKaryotype(chromosomes="chr1")
+
+nona_p <- df0 %>%
+  # filter(!is.na(am_pathogenicity_mean)) %>%
+  filter(chr == "chr1") %>%
+  mutate(am_pathogenicity_mean = case_when(is.na(am_pathogenicity_mean) ~ 0,
+                                           TRUE ~ am_pathogenicity_mean)) %>%
+  arrange(start)
+kpLines(kp, chr = "chr1", x = nona_p$start, y = nona_p$am_pathogenicity_mean)
+
+#make a dataframe to lump together subsequent kataegis regions
+
+
+kpPlotRegions(kp, data=mean_kats, col="#FFEECC", border="#FFCCAA", r0=0, r1=0.3)
+
+# kpAddLabels(kp, labels="mean kataegis snv count", data.panel = 1)
+
+#why are they stacking? do it so they don't stack
+#there should not be any overlapping values
+
+
+```
+kataegis
+
+```{r}
+katfile1 <- readRDS(file = here("data_input", "abby_tmp", "f1_kdvcf_rdata", "EIBS-001TA_02814_1_1_1_20220930_kdvcf.rds"))
+
+
+```
+
+methylation
+
+```{r}
+#this is how to read the .bed files:
+# filepath <- here("data_input", "abby_tmp", "modkit", "EIBS-001X6_04312_1_1_1_20230317.modkit.bed")
+# methfile1 <- import(filepath, format="bed")
+filepath <- here("data_input", "abby_tmp", "modkit", "EIBS-001X6_04312_1_1_1_20230317.modkit.summary")
+methsum1 <- read.table(filepath)
+  
+  read.table(file = here("data_input", "abby_tmp", "modkit", "EIBS-001X6_04312_1_1_1_20230317.modkit.bed"), header = FALSE, sep="\t", stringsAsFactors=FALSE)
+
+
+```
+
+
